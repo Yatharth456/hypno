@@ -9,4 +9,5 @@ urlpatterns = [
     path('update-password/', views.UpdatePasswordAPIView.as_view(), name='update_password'),
     path('admin-users/', views.UserAdminView.as_view(), name='user_admin'),
     path('admin-users/<int:pk>/', views.UserAdminView.as_view(), name='user-detail'),
+    path('user/<int:pk>/', views.UserView.as_view(), name='get_or_disable1'),
 ]
