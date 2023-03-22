@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Account verification</title>
+</head>
+<body>
+    <!-- Update the email greeting to match your brand tone and style -->
+    <p>Hello {{ email }},</p>
+    
+    <!-- Update the email message to match your application's branding and instructions -->
+    <p>Thank you for creating an account! To get started, please verify your email address by clicking the link below:</p>
+    
+    <!-- Update the link text and formatting to match your brand style -->
+    <p><a href="{{ verification_link }}">Verify your email address</a></p>
+
+    <!-- Update the instructions and formatting to match your brand style -->
+    <p>Once you've verified your email address, you can log in to your account using the following credentials:</p>
+    
+    <!-- Update the formatting and placeholders to match your brand style and user data -->
+    <table>
+        <tr>
+            <td><strong>Username:</strong></td>
+            <td>{{ username }}</td>
+        </tr>
+        <tr>
+            <td><strong>Password:</strong></td>
+            <td>{{ password }}</td>
+        </tr>
+    </table>
+    
+    <!-- Update the email signature and formatting to match your brand style -->
+    <p>Best regards,<br>
+    The {{ app_name }} Team</p>
+</body>
+</html>
