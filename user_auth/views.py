@@ -122,7 +122,7 @@ class Login(APIView):
         if data['username'] and data['password'] is not None:
             try:
                 # Retrieve the user object for the given username
-                user = User.objects.get(username=data['username'])
+                user = User.objects.get(username=data['username'], is_active=True)
                 # Check if the user is active
                 if user.is_active:
                     # Check if the password is correct
@@ -131,13 +131,13 @@ class Login(APIView):
                     if checkpswd:
                         token, created = Token.objects.get_or_create(user=user)
                         serializer = UserSerializer(user)
-                        return Response({'user': serializer.data, 'token': token.key})
+                        return Response({'user': serializer.data, 'token': token.key,'role': "admin" if user.is_superuser else "user"})
                     else:
                         # Return an error message if the user account is disabled
                         return Response({"msg":"please check your password"}, status=status.HTTP_401_UNAUTHORIZED)
                 else:
                     # Return an error message if the user account is disabled
-                    return Response({"msg":"Your account is disabled."}, status=status.HTTP_401_UNAUTHORIZED)
+                    return Response({"msg":"Your account is diactivated."}, status=status.HTTP_401_UNAUTHORIZED)
             except User.DoesNotExist:
                 # Return an error message if the user does not exist
                 return Response({"msg": "Please provide valid username and password."}, status=status.HTTP_401_UNAUTHORIZED)
@@ -209,10 +209,13 @@ class UserAdminView(APIView):
 
     def put(self, request, pk):
         user = get_object_or_404(User, pk=pk)
-        serializer = RegisterUserSerializer(user, data=request.data)
+        data = request.data
+        password = make_password(data['password'])
+        data['password'] = password
+        serializer = RegisterUserSerializer(user, data=data)
         if serializer.is_valid():
             user = serializer.save()
-            return Response(UserSerializer(user).data, status=status.HTTP_200_OK)
+            return Response({"data": UserSerializer(user).data, "message": "Your data updated."}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -220,3 +223,20 @@ class UserAdminView(APIView):
         user = get_object_or_404(User, pk=pk)
         user.delete()
         return Response({"msg": "User deleted."}, status=status.HTTP_204_NO_CONTENT)
+
+
+class UserView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, pk):
+        user = User.objects.get(id=pk)
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=200)
+
+    def delete(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        user.is_active = False
+        user.save()
+        return Response({
+            'message': 'User disabled Successfully.'
+        })

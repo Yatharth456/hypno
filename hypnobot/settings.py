@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'user_auth',
     'gpt',
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    'corsheaders',
 
 ]
 
@@ -62,7 +63,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 ROOT_URLCONF = 'hypnobot.urls'
 
@@ -150,3 +156,4 @@ EMAIL_HOST_USER = Config.EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = Config.EMAIL_HOST_PASSWORD
 
 AUTH_USER_MODEL = 'user_auth.User'
+
